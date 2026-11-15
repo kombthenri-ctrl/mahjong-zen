@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Play | Mahjong Zen</title>
+<meta name="description" content="Learn how to play Mahjong Zen, match identical free tiles and clear the board. Instructions in English and French.">
+<style>
+:root{color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;padding:24px 16px;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#f3f6f2;color:#183b30;line-height:1.6}
+main{max-width:760px;margin:0 auto;background:#fff;padding:clamp(20px,5vw,40px);border-radius:18px;box-shadow:0 8px 30px #153c2b12}
+header{text-align:center;margin-bottom:26px}
+h1{margin:0 0 6px;font-size:clamp(28px,5vw,38px)}
+.sub{color:#557267;margin:0}
+.lang{display:flex;justify-content:center;gap:8px;margin:20px 0}
+button,.back{border:0;border-radius:22px;padding:9px 18px;font-weight:700;cursor:pointer;font-size:15px}
+button{background:#e7eee9;color:#244b3d}
+button.active{background:#145b45;color:white}
+h2{font-size:21px;margin:26px 0 8px;color:#145b45}
+li{padding:4px 0}
+.tip{background:#eef7f1;border-left:4px solid #3c956b;padding:12px 16px;border-radius:8px;margin:20px 0}
+footer{text-align:center;margin-top:30px}
+.back{display:inline-block;background:#f2c94c;color:#352900;text-decoration:none}
+a{color:#145b45}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>🀄 Mahjong Zen</h1>
+  <p class="sub" id="subtitle">A calm puzzle, one pair at a time.</p>
+  <div class="lang" aria-label="Language">
+    <button id="en" class="active" type="button" aria-pressed="true">English</button>
+    <button id="fr" type="button" aria-pressed="false">Français</button>
+  </div>
+</header>
+
+<article id="content">
+  <h2>How to play</h2>
+  <p>The goal is to clear the board by matching pairs of identical tiles.</p>
+  <h2>1. Select a free tile</h2>
+  <p>A tile is free when no tile is covering it and at least one of its left or right sides is open. Covered or blocked tiles cannot be selected.</p>
+  <h2>2. Match identical tiles</h2>
+  <p>Select one free tile, then select another free tile with the same symbol. The matching pair is removed from the board.</p>
+  <h2>3. Clear the board</h2>
+  <p>Keep finding matching pairs until all tiles have been removed. You win when the board is empty.</p>
+  <h2>Game tools</h2>
+  <ul>
+    <li><strong>Hint:</strong> highlights a matching pair when one is available.</li>
+    <li><strong>Undo:</strong> restores the last pair you removed.</li>
+    <li><strong>Shuffle:</strong> rearranges the remaining tiles.</li>
+    <li><strong>New game:</strong> starts a fresh puzzle.</li>
+  </ul>
+  <div class="tip"><strong>Tip:</strong> Look for pairs that uncover tiles underneath or open up blocked sides. Planning a few moves ahead can help you avoid getting stuck.</div>
+</article>
+
+<footer>
+  <a class="back" id="back" href="./">← Back to the game</a>
+</footer>
+</main>
+<script>
+const copy={
+en:{
+title:"How to Play | Mahjong Zen",subtitle:"A calm puzzle, one pair at a time.",
+content:`<h2>How to play</h2>
+<p>The goal is to clear the board by matching pairs of identical tiles.</p>
+<h2>1. Select a free tile</h2>
+<p>A tile is free when no tile is covering it and at least one of its left or right sides is open. Covered or blocked tiles cannot be selected.</p>
+<h2>2. Match identical tiles</h2>
+<p>Select one free tile, then select another free tile with the same symbol. The matching pair is removed from the board.</p>
+<h2>3. Clear the board</h2>
+<p>Keep finding matching pairs until all tiles have been removed. You win when the board is empty.</p>
+<h2>Game tools</h2>
+<ul>
+<li><strong>Hint:</strong> highlights a matching pair when one is available.</li>
+<li><strong>Undo:</strong> restores the last pair you removed.</li>
+<li><strong>Shuffle:</strong> rearranges the remaining tiles.</li>
+<li><strong>New game:</strong> starts a fresh puzzle.</li>
+</ul>
+<div class="tip"><strong>Tip:</strong> Look for pairs that uncover tiles underneath or open up blocked sides. Planning a few moves ahead can help you avoid getting stuck.</div>`,
+back:"← Back to the game"
+},
+fr:{
+title:"Comment jouer | Mahjong Zen",subtitle:"Un puzzle apaisant, une paire à la fois.",
+content:`<h2>Comment jouer</h2>
+<p>Le but est de vider le plateau en associant des paires de tuiles identiques.</p>
+<h2>1. Sélectionner une tuile libre</h2>
+<p>Une tuile est libre lorsqu'aucune autre tuile ne la recouvre et qu'au moins l'un de ses côtés gauche ou droit est dégagé. Les tuiles recouvertes ou bloquées ne peuvent pas être sélectionnées.</p>
+<h2>2. Associer les tuiles identiques</h2>
+<p>Sélectionnez une tuile libre, puis une autre tuile libre portant le même symbole. La paire est alors retirée du plateau.</p>
+<h2>3. Vider le plateau</h2>
+<p>Continuez à trouver des paires jusqu'à ce que toutes les tuiles soient retirées. Vous gagnez lorsque le plateau est vide.</p>
+<h2>Les outils du jeu</h2>
+<ul>
+<li><strong>Indice :</strong> met en évidence une paire disponible.</li>
+<li><strong>Annuler :</strong> restaure la dernière paire retirée.</li>
+<li><strong>Mélanger :</strong> réorganise les tuiles restantes.</li>
+<li><strong>Nouvelle partie :</strong> lance un nouveau puzzle.</li>
+</ul>
+<div class="tip"><strong>Conseil :</strong> Cherchez les paires qui libèrent les tuiles situées en dessous ou qui dégagent les côtés bloqués. Anticiper quelques coups peut vous éviter de rester bloqué.</div>`,
+back:"← Retour au jeu"
+}};
+function setLang(lang){
+const c=copy[lang]||copy.en;
+document.documentElement.lang=lang;
+document.title=c.title;
+document.getElementById("subtitle").textContent=c.subtitle;
+document.getElementById("content").innerHTML=c.content;
+document.getElementById("back").textContent=c.back;
+for(const id of ["en","fr"]){
+const active=id===lang;
+document.getElementById(id).classList.toggle("active",active);
+document.getElementById(id).setAttribute("aria-pressed",String(active));
+}
+try{localStorage.setItem("mahjongZenRulesLanguage",lang)}catch(e){}
+}
+document.getElementById("en").onclick=()=>setLang("en");
+document.getElementById("fr").onclick=()=>setLang("fr");
+let lang="en";try{lang=localStorage.getItem("mahjongZenRulesLanguage")||"en"}catch(e){}
+setLang(lang);
+</script>
+</body>
+</html>
