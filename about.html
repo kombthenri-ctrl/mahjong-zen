@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About Us | Mahjong Zen</title>
+<meta name="description" content="Learn about Mahjong Zen, a simple and relaxing tile-matching puzzle you can enjoy in your browser.">
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:24px 16px;font-family:system-ui,sans-serif;background:#f3f6f2;color:#183b30;line-height:1.7}
+main{max-width:760px;margin:0 auto;background:#fff;padding:clamp(20px,5vw,40px);border-radius:18px;box-shadow:0 8px 30px #153c2b12}
+header{text-align:center;margin-bottom:24px}
+h1{margin:0 0 6px;font-size:clamp(28px,5vw,38px)}
+.sub{color:#557267;margin:0}
+.lang{display:flex;justify-content:center;gap:8px;margin:20px 0}
+button,.link{border:0;border-radius:22px;padding:9px 18px;font-weight:700;cursor:pointer;font-size:15px}
+button{background:#e7eee9;color:#244b3d}
+button.active{background:#145b45;color:#fff}
+h2{font-size:21px;margin:24px 0 8px;color:#145b45}
+p{margin:8px 0 14px}
+.highlight{background:#eef7f1;border-left:4px solid #3c956b;padding:14px 16px;border-radius:8px;margin:20px 0}
+nav{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:28px}
+.link{display:inline-block;background:#f2c94c;color:#352900;text-decoration:none}
+.link.secondary{background:#e7eee9;color:#244b3d}
+footer{text-align:center;color:#668075;font-size:13px;margin-top:28px}
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>🀄 Mahjong Zen</h1>
+<p class="sub" id="subtitle">A simple puzzle and a relaxing break.</p>
+<div class="lang" aria-label="Language selector">
+<button id="en" class="active" type="button" aria-pressed="true">English</button>
+<button id="fr" type="button" aria-pressed="false">Français</button>
+</div>
+</header>
+<article id="content">
+<h2>About Mahjong Zen</h2>
+<p>Mahjong Zen is a browser-based tile-matching puzzle. The goal is simple: find pairs of identical available tiles and clear the board.</p>
+<h2>Our goal</h2>
+<p>We want to offer visitors a straightforward and enjoyable game that can be played directly in a web browser. Take a short break, focus on the board and enjoy finding each matching pair.</p>
+<h2>Play your way</h2>
+<p>Use the game tools when you need help: get a hint, undo your last match, shuffle the remaining tiles or start a new game.</p>
+<div class="highlight"><strong>Available in two languages:</strong> Mahjong Zen offers English and French text so more visitors can enjoy the game.</div>
+<h2>Thank you for playing</h2>
+<p>Thank you for visiting Mahjong Zen. We hope you enjoy your time with the game!</p>
+</article>
+<nav>
+<a class="link" id="home" href="./">← Back to the game</a>
+<a class="link secondary" id="rules" href="rules.html">How to Play</a>
+</nav>
+<footer>Mahjong Zen</footer>
+</main>
+<script>
+const translations={
+en:{
+title:"About Us | Mahjong Zen",description:"Learn about Mahjong Zen, a simple and relaxing tile-matching puzzle you can enjoy in your browser.",subtitle:"A simple puzzle and a relaxing break.",
+content:`<h2>About Mahjong Zen</h2>
+<p>Mahjong Zen is a browser-based tile-matching puzzle. The goal is simple: find pairs of identical available tiles and clear the board.</p>
+<h2>Our goal</h2>
+<p>We want to offer visitors a straightforward and enjoyable game that can be played directly in a web browser. Take a short break, focus on the board and enjoy finding each matching pair.</p>
+<h2>Play your way</h2>
+<p>Use the game tools when you need help: get a hint, undo your last match, shuffle the remaining tiles or start a new game.</p>
+<div class="highlight"><strong>Available in two languages:</strong> Mahjong Zen offers English and French text so more visitors can enjoy the game.</div>
+<h2>Thank you for playing</h2>
+<p>Thank you for visiting Mahjong Zen. We hope you enjoy your time with the game!</p>`,
+home:"← Back to the game",rules:"How to Play"
+},
+fr:{
+title:"À propos | Mahjong Zen",description:"Découvrez Mahjong Zen, un jeu de réflexion simple et relaxant auquel vous pouvez jouer dans votre navigateur.",subtitle:"Un puzzle simple pour une pause relaxante.",
+content:`<h2>À propos de Mahjong Zen</h2>
+<p>Mahjong Zen est un jeu d'association de tuiles accessible depuis un navigateur. Le but est simple : trouver des paires de tuiles identiques disponibles et vider le plateau.</p>
+<h2>Notre objectif</h2>
+<p>Nous souhaitons proposer aux visiteurs un jeu facile à prendre en main et agréable, directement dans leur navigateur. Faites une petite pause, concentrez-vous sur le plateau et prenez plaisir à trouver chaque paire.</p>
+<h2>Jouez à votre rythme</h2>
+<p>Utilisez les outils du jeu lorsque vous en avez besoin : demander un indice, annuler votre dernière association, mélanger les tuiles restantes ou commencer une nouvelle partie.</p>
+<div class="highlight"><strong>Disponible en deux langues :</strong> Mahjong Zen propose des textes en anglais et en français afin que davantage de visiteurs puissent profiter du jeu.</div>
+<h2>Merci de jouer</h2>
+<p>Merci de visiter Mahjong Zen. Nous espérons que vous apprécierez votre moment de jeu !</p>`,
+home:"← Retour au jeu",rules:"Comment jouer"
+}};
+function setLang(lang){
+const t=translations[lang]||translations.en;
+document.documentElement.lang=lang;
+document.title=t.title;
+document.querySelector('meta[name="description"]').content=t.description;
+document.getElementById("subtitle").textContent=t.subtitle;
+document.getElementById("content").innerHTML=t.content;
+document.getElementById("home").textContent=t.home;
+document.getElementById("rules").textContent=t.rules;
+for(const id of ["en","fr"]){
+const active=id===lang;
+document.getElementById(id).classList.toggle("active",active);
+document.getElementById(id).setAttribute("aria-pressed",String(active));
+}
+try{localStorage.setItem("mahjongZenAboutLanguage",lang)}catch(e){}
+}
+document.getElementById("en").onclick=()=>setLang("en");
+document.getElementById("fr").onclick=()=>setLang("fr");
+let lang="en";try{lang=localStorage.getItem("mahjongZenAboutLanguage")||"en"}catch(e){}
+setLang(lang);
+</script>
+</body>
+</html>
