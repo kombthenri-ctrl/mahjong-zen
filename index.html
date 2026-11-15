@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Mahjong Zen : Puzzle Quotidien</title>
-<meta name="description" content="Jeu de Mahjong solitaire gratuit : éliminez les paires de tuiles et détendez-vous.">
-<!-- ADSENSE : remplacez ca-pub-XXXXXXXXXXXXXXXX par votre identifiant éditeur, puis décommentez -->
-<!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+<title>Mahjong Zen: Daily Puzzle</title>
+<meta name="description" content="Play Mahjong Zen for free. Match identical tiles, clear the board and enjoy a relaxing daily puzzle.">
 <style>
 :root{--bg1:#0b5d4a;--bg2:#073b30;--ink:#fff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;min-height:100vh;font-family:system-ui,sans-serif;color:var(--ink);background:radial-gradient(circle at 50% 30%,var(--bg1),var(--bg2));display:flex;flex-direction:column;align-items:center;padding:8px 0 16px}
-h1{font-size:20px;margin:6px 0}
-.bar{display:flex;gap:8px;align-items:center;margin:6px 0;flex-wrap:wrap;justify-content:center}
-button.b{background:#f4c542;color:#3a2a00;border:0;border-radius:20px;padding:8px 14px;font-weight:700;font-size:14px}
-button.b:disabled{opacity:.4}
-.info{font-size:14px;opacity:.9}
+body{margin:0;min-height:100vh;font-family:system-ui,sans-serif;color:var(--ink);background:radial-gradient(circle at 50% 30%,var(--bg1),var(--bg2));display:flex;flex-direction:column;align-items:center;padding:8px 12px 20px}
+h1{font-size:22px;margin:8px 0}
+.bar{display:flex;gap:8px;align-items:center;margin:7px 0;flex-wrap:wrap;justify-content:center}
+button{font-family:inherit;cursor:pointer}
+button.b{background:#f4c542;color:#3a2a00;border:0;border-radius:20px;padding:9px 14px;font-weight:700;font-size:14px}
+button.b:disabled{opacity:.4;cursor:not-allowed}
+.langbar{margin:2px 0 8px}
+button.lang{background:#ffffff20;color:#fff;border:1px solid #ffffff80;border-radius:18px;padding:6px 14px;font-weight:700}
+button.lang.active{background:#fff;color:#164b3d;border-color:#fff}
+.info{font-size:14px;opacity:.95}
 .ad{width:100%;max-width:728px;min-height:60px;margin:6px 0;text-align:center}
 .ad-ph{border:1px dashed #ffffff66;color:#ffffffaa;font-size:12px;padding:18px 0}
 #board{position:relative;margin:10px auto}
@@ -24,59 +26,145 @@ button.b:disabled{opacity:.4}
 .t.sel{background:linear-gradient(145deg,#bff,#7de);outline:2px solid #fff}
 .t.hint{animation:p .5s 3}
 @keyframes p{50%{background:#ffe27a}}
-#msg{min-height:20px;font-size:14px;color:#ffe27a}
-#ov{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;text-align:center;padding:20px}
+#msg{min-height:22px;font-size:14px;color:#ffe27a;text-align:center}
+#ov{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;text-align:center;padding:20px;z-index:1000}
 #ov.on{display:flex}
 #ov .card{background:#fff;color:#222;border-radius:16px;padding:20px;max-width:340px;width:100%}
+#ov .card h2{margin-top:0}
+@media(max-width:420px){button.b{padding:8px 11px;font-size:13px}h1{font-size:20px}}
 </style>
 </head>
 <body>
 <h1>🀄 Mahjong Zen</h1>
 
-<div class="ad" id="adTop">
-  <!-- Collez ici votre bloc AdSense (bannière) -->
-  <!-- <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="1111111111" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script> -->
-  <div class="ad-ph">Espace publicitaire (haut)</div>
+<div class="bar langbar" aria-label="Language selector">
+  <button class="lang active" id="langEn" type="button" aria-pressed="true">English</button>
+  <button class="lang" id="langFr" type="button" aria-pressed="false">Français</button>
 </div>
 
-<div class="bar info"><span id="left">Tuiles : 92</span><span>·</span><span id="time">0:00</span></div>
-<div class="bar">
-  <button class="b" id="bShuf">🔀 Mélanger</button>
-  <button class="b" id="bHint">💡 Indice</button>
-  <button class="b" id="bUndo">↩ Annuler</button>
-  <button class="b" id="bNew">Nouvelle partie</button>
+<div class="ad" id="adTop">
+  <div class="ad-ph" data-i18n="adTop">Advertisement space (top)</div>
 </div>
-<div id="msg"></div>
-<div id="board"></div>
+
+<div class="bar info">
+  <span id="left">Tiles: 92</span><span>·</span><span id="time">0:00</span>
+</div>
+
+<div class="bar">
+  <button class="b" id="bShuf" type="button">🔀 Shuffle</button>
+  <button class="b" id="bHint" type="button">💡 Hint</button>
+  <button class="b" id="bUndo" type="button" disabled>↩ Undo</button>
+  <button class="b" id="bNew" type="button">New game</button>
+</div>
+
+<div id="msg" role="status" aria-live="polite"></div>
+<div id="board" aria-label="Mahjong game board"></div>
 
 <div class="ad" id="adBottom">
-  <!-- Collez ici votre second bloc AdSense -->
-  <div class="ad-ph">Espace publicitaire (bas)</div>
+  <div class="ad-ph" data-i18n="adBottom">Advertisement space (bottom)</div>
 </div>
 
-<div id="ov"><div class="card">
-  <h2>🎉 Bravo !</h2>
-  <p id="score"></p>
-  <div class="ad" id="adWin"><div class="ad-ph">Espace publicitaire (fin de partie)</div></div>
-  <button class="b" onclick="newGame()">Rejouer</button>
-</div></div>
+<div id="ov" role="dialog" aria-modal="true" aria-labelledby="winTitle">
+  <div class="card">
+    <h2 id="winTitle" data-i18n="winTitle">🎉 Congratulations!</h2>
+    <p id="score"></p>
+    <div class="ad" id="adWin"><div class="ad-ph" data-i18n="adWin">Advertisement space (end of game)</div></div>
+    <button class="b" id="bReplay" type="button">Play again</button>
+  </div>
+</div>
 
 <script>
 const $=id=>document.getElementById(id);
+
+const translations={
+  en:{
+    title:"Mahjong Zen: Daily Puzzle",
+    description:"Play Mahjong Zen for free. Match identical tiles, clear the board and enjoy a relaxing daily puzzle.",
+    tiles:"Tiles",
+    shuffle:"🔀 Shuffle",
+    hint:"💡 Hint",
+    undo:"↩ Undo",
+    newGame:"New game",
+    replay:"Play again",
+    noMoves:"No more moves available. Shuffle the tiles!",
+    winTitle:"🎉 Congratulations!",
+    completed:"Completed in",
+    adTop:"Advertisement space (top)",
+    adBottom:"Advertisement space (bottom)",
+    adWin:"Advertisement space (end of game)"
+  },
+  fr:{
+    title:"Mahjong Zen : Puzzle quotidien",
+    description:"Jouez gratuitement à Mahjong Zen. Associez les tuiles identiques, videz le plateau et profitez d'un puzzle relaxant.",
+    tiles:"Tuiles",
+    shuffle:"🔀 Mélanger",
+    hint:"💡 Indice",
+    undo:"↩ Annuler",
+    newGame:"Nouvelle partie",
+    replay:"Rejouer",
+    noMoves:"Aucun coup possible. Mélangez les tuiles !",
+    winTitle:"🎉 Bravo !",
+    completed:"Terminé en",
+    adTop:"Espace publicitaire (haut)",
+    adBottom:"Espace publicitaire (bas)",
+    adWin:"Espace publicitaire (fin de partie)"
+  }
+};
+
+let currentLang="en";
 let tiles=[],sel=null,hist=[],ts=44,t0=0,timer=null,over=false;
 
+function tr(key){return translations[currentLang][key]||translations.en[key]||key;}
+
+function setLanguage(lang,save=true){
+  currentLang=lang==="fr"?"fr":"en";
+  document.documentElement.lang=currentLang;
+  document.title=tr("title");
+  document.querySelector('meta[name="description"]').content=tr("description");
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    const key=el.getAttribute("data-i18n");
+    el.textContent=tr(key);
+  });
+  $("bShuf").textContent=tr("shuffle");
+  $("bHint").textContent=tr("hint");
+  $("bUndo").textContent=tr("undo");
+  $("bNew").textContent=tr("newGame");
+  $("bReplay").textContent=tr("replay");
+  $("langEn").classList.toggle("active",currentLang==="en");
+  $("langFr").classList.toggle("active",currentLang==="fr");
+  $("langEn").setAttribute("aria-pressed",String(currentLang==="en"));
+  $("langFr").setAttribute("aria-pressed",String(currentLang==="fr"));
+  if(save){
+    try{localStorage.setItem("mahjongZenLanguage",currentLang);}catch(e){}
+  }
+  updateText();
+}
+
+function updateText(){
+  const n=tiles.filter(t=>t.on).length;
+  $("left").textContent=tr("tiles")+": "+n;
+  if(over){
+    $("score").textContent=tr("completed")+" "+$("time").textContent+".";
+  }else if(n>0&&!findPair()){
+    $("msg").textContent=tr("noMoves");
+  }else{
+    $("msg").textContent="";
+  }
+}
+
 function layout(){
-  const L=[[0,0,8,6],[1,1,6,4],[2,1,4,4],[3,2,2,2]]; // [x0,y0,cols,rows]
+  const L=[[0,0,8,6],[1,1,6,4],[2,1,4,4],[3,2,2,2]];
   const out=[];
   L.forEach((r,l)=>{for(let i=0;i<r[2];i++)for(let j=0;j<r[3];j++)out.push({l,x:r[0]+i,y:r[1]+j,on:true,k:0});});
   return out;
 }
+
 const covered=t=>tiles.some(u=>u.on&&u.l>t.l&&Math.abs(u.x-t.x)<1&&Math.abs(u.y-t.y)<1);
 const side=(t,d)=>tiles.some(u=>u.on&&u.l===t.l&&u.x===t.x+d&&Math.abs(u.y-t.y)<1);
 const free=t=>t.on&&!covered(t)&&(!side(t,-1)||!side(t,1));
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;};
 
-// Attribution solvable : on "joue à l'envers" en retirant des paires libres
+// Create a solvable arrangement by removing available pairs in reverse.
 function assign(ts_){
   for(;;){
     const bag=shuffle(Array.from({length:ts_.length/2},(_,i)=>i%36));
@@ -85,7 +173,9 @@ function assign(ts_){
     while(left.length){
       const f=shuffle(left.filter(free));
       if(f.length<2){ok=false;break;}
-      const k=bag.pop();f[0].k=f[1].k=k;f[0].on=f[1].on=false;
+      const k=bag.pop();
+      f[0].k=f[1].k=k;
+      f[0].on=f[1].on=false;
       left=left.filter(t=>t.on);
     }
     ts_.forEach(t=>t.on=true);
@@ -95,63 +185,105 @@ function assign(ts_){
 
 function size(){
   ts=Math.max(30,Math.min(56,Math.floor((innerWidth-24)/8.4)));
-  const b=$('board');b.style.width=(8*ts+12)+'px';b.style.height=(6*ts*1.3+14)+'px';
+  const b=$("board");
+  b.style.width=(8*ts+12)+"px";
+  b.style.height=(6*ts*1.3+14)+"px";
 }
+
 function render(){
-  const b=$('board');b.innerHTML='';
+  const b=$("board");
+  b.innerHTML="";
   const off=Math.max(3,ts/12);
   tiles.forEach(t=>{
     if(!t.on)return;
-    const d=document.createElement('div');
+    const d=document.createElement("div");
     const f=free(t);
-    d.className='t'+(f?'':' blocked')+(t===sel?' sel':'');
+    d.className="t"+(f?"":" blocked")+(t===sel?" sel":"");
     d.style.cssText=`width:${ts}px;height:${ts*1.3}px;left:${t.x*ts+t.l*off}px;top:${t.y*ts*1.3-t.l*off+8}px;z-index:${t.l*100+t.y*10+t.x};font-size:${ts*1.05}px;line-height:1`;
-    d.textContent=String.fromCodePoint(0x1F000+t.k)+'\uFE0E';
-    t.el=d;d.onclick=()=>pick(t);
+    d.textContent=String.fromCodePoint(0x1F000+t.k)+"\uFE0E";
+    d.setAttribute("role","button");
+    d.setAttribute("aria-label","Mahjong tile");
+    t.el=d;
+    d.onclick=()=>pick(t);
     b.appendChild(d);
   });
-  const n=tiles.filter(t=>t.on).length;
-  $('left').textContent='Tuiles : '+n;
-  $('bUndo').disabled=!hist.length;
-  if(n===0)win();
-  else if(!findPair()){$('msg').textContent='Aucun coup possible : mélangez !';}
-  else $('msg').textContent='';
+  $("bUndo").disabled=!hist.length;
+  updateText();
+  if(tiles.filter(t=>t.on).length===0)win();
 }
+
 function pick(t){
   if(over||!free(t))return;
   if(!t0)start();
   if(sel===t){sel=null;return render();}
   if(sel&&sel.k===t.k){
-    sel.on=t.on=false;hist.push([sel,t]);sel=null;return render();
+    sel.on=t.on=false;
+    hist.push([sel,t]);
+    sel=null;
+    return render();
   }
-  sel=t;render();
+  sel=t;
+  render();
 }
+
 function findPair(){
   const f=tiles.filter(free);
   for(let i=0;i<f.length;i++)for(let j=i+1;j<f.length;j++)if(f[i].k===f[j].k)return[f[i],f[j]];
   return null;
 }
-function start(){t0=Date.now();timer=setInterval(()=>{const s=(Date.now()-t0)/1000|0;$('time').textContent=(s/60|0)+':'+String(s%60).padStart(2,'0');},500);}
+
+function start(){
+  t0=Date.now();
+  timer=setInterval(()=>{
+    const s=(Date.now()-t0)/1000|0;
+    $("time").textContent=(s/60|0)+":"+String(s%60).padStart(2,"0");
+  },500);
+}
+
 function win(){
-  over=true;clearInterval(timer);
-  $('score').textContent='Terminé en '+$('time').textContent+'.';
-  $('ov').classList.add('on');
-  // Ici : affichez votre bloc AdSense de fin de partie
+  if(over)return;
+  over=true;
+  clearInterval(timer);
+  $("score").textContent=tr("completed")+" "+$("time").textContent+".";
+  $("ov").classList.add("on");
 }
+
 function newGame(){
-  clearInterval(timer);t0=0;over=false;sel=null;hist=[];
-  $('time').textContent='0:00';$('ov').classList.remove('on');
-  tiles=layout();assign(tiles);size();render();
+  clearInterval(timer);
+  t0=0;over=false;sel=null;hist=[];
+  $("time").textContent="0:00";
+  $("ov").classList.remove("on");
+  tiles=layout();
+  assign(tiles);
+  size();
+  render();
 }
-$('bNew').onclick=newGame;
-$('bUndo').onclick=()=>{const h=hist.pop();if(h){h[0].on=h[1].on=true;sel=null;render();}};
-$('bHint').onclick=()=>{const p=findPair();if(p){p.forEach(t=>t.el&&t.el.classList.add('hint'));}};
-$('bShuf').onclick=()=>{
-  const alive=tiles.filter(t=>t.on);if(!alive.length)return;
-  sel=null;assign(alive);render();
+
+$("bNew").onclick=newGame;
+$("bReplay").onclick=newGame;
+$("bUndo").onclick=()=>{
+  const h=hist.pop();
+  if(h){h[0].on=h[1].on=true;sel=null;render();}
 };
-addEventListener('resize',()=>{size();render();});
+$("bHint").onclick=()=>{
+  const p=findPair();
+  if(p)p.forEach(t=>t.el&&t.el.classList.add("hint"));
+};
+$("bShuf").onclick=()=>{
+  const alive=tiles.filter(t=>t.on);
+  if(!alive.length)return;
+  sel=null;
+  assign(alive);
+  render();
+};
+$("langEn").onclick=()=>setLanguage("en");
+$("langFr").onclick=()=>setLanguage("fr");
+addEventListener("resize",()=>{size();render();});
+
 newGame();
+let savedLanguage="en";
+try{savedLanguage=localStorage.getItem("mahjongZenLanguage")||"en";}catch(e){}
+setLanguage(savedLanguage,false);
 </script>
 </body>
 </html>
